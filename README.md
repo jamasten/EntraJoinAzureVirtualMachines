@@ -1,6 +1,6 @@
-# Azure Virtual Desktop Agents
+# Entra Join Azure Virtual Machines
 
-The easiest way to deploy this solution and add the AVD agents to your virtual machine is to use a template spec. To create the template spec, there are two files that are needed and must be downloaded:
+The easiest way to deploy this solution and Entra join your virtual machine is to use a template spec. To create the template spec, there are two files that are needed and must be downloaded:
 
 1. solution.json
 1. uiDefinition.json
