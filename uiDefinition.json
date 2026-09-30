@@ -1,0 +1,79 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2021-09-09/uiFormDefinition.schema.json",
+  "view": {
+    "kind": "Form",
+    "properties": {
+      "title": "Deploy AAD Login Extension & Intune Enrollment",
+      "steps": [
+        {
+          "name": "basics",
+          "label": "Basics",
+          "elements": [
+            {
+              "type": "Microsoft.Common.SubscriptionSelector",
+              "name": "subscription",
+              "resourceProviders": [
+                "Microsoft.Compute"
+              ]
+            },
+            {
+              "type": "Microsoft.Common.LocationSelector",
+              "name": "location",
+              "label": "Select a region",
+              "resourceTypes": [
+                "Microsoft.Compute/virtualMachines"
+              ],
+              "scope": {
+                "subscriptionId": "[steps('basics').subscription.subscriptionId]"
+              }
+            },
+            {
+              "name": "intune",
+              "type": "Microsoft.Common.OptionsGroup",
+              "visible": true,
+              "label": "Intune Enrollment",
+              "defaultValue": "No",
+              "toolTip": "If Intune is available, configured, and licensed in your Entra ID tenant, you can choose to have the VM automatically enrolled during the deployment by selecting Yes.",
+              "constraints": {
+                "required": false,
+                "allowedValues": [
+                  {
+                    "label": "Yes",
+                    "value": true
+                  },
+                  {
+                    "label": "No",
+                    "value": false
+                  }
+                ]
+              }
+            },
+            {
+              "name": "virtualMachineSelector",
+              "type": "Microsoft.Solutions.ResourceSelector",
+              "label": "Virtual Machine",
+              "resourceType": "Microsoft.Compute/virtualMachines",
+              "constraints": {
+                "required": true
+              },
+              "scope": {
+                "location": "[steps('basics').location.name]",
+                "subscriptionId": "[steps('basics').subscription.subscriptionId]"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "outputs": {
+      "parameters": {
+        "intune": "[steps('basics').intune]",
+        "location": "[steps('basics').location.name]",
+        "virtualMachineResourceId": "[steps('basics').virtualMachineSelector.id]"
+      },
+      "kind": "ResourceGroup",
+      "location": "[steps('basics').location.name]",
+      "resourceGroupId": "[take(steps('basics').virtualMachineSelector.id, indexOf(steps('basics').virtualMachineSelector.id, '/providers/'))]"
+    }
+  }
+}
